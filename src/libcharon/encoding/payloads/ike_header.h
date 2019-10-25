@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Tobias Brunner
+ * Copyright (C) 2007-2019 Tobias Brunner
  * Copyright (C) 2005-2011 Martin Willi
  * Copyright (C) 2005 Jan Hutter
  * HSR Hochschule fuer Technik Rapperswil
@@ -121,11 +121,14 @@ enum exchange_type_t{
 	 */
 	IKE_SESSION_RESUME = 38,
 
+	/* IKE_INTERMEDIATE (draft-ietf-ipsecme-ikev2-intermediate) */
+	IKE_INTERMEDIATE = 240,
+
 #ifdef ME
 	/**
 	 * ME_CONNECT
 	 */
-	ME_CONNECT = 240,
+	ME_CONNECT = 241,
 #endif /* ME */
 
 	/**
