@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Tobias Brunner
+ * Copyright (C) 2006-2019 Tobias Brunner
  * Copyright (C) 2006 Daniel Roethlisberger
  * Copyright (C) 2005-2006 Martin Willi
  * Copyright (C) 2005 Jan Hutter
@@ -79,8 +79,10 @@ enum notify_type_t {
 	TEMPORARY_FAILURE = 43,
 	CHILD_SA_NOT_FOUND = 44,
 
+	/* draft-tjhai-ipsecme-hybrid-qske-ikev2 */
+	STATE_NOT_FOUND = 8192,
 	/* IKE-ME, private use */
-	ME_CONNECT_FAILED = 8192,
+	ME_CONNECT_FAILED = 8193,
 
 	/* Windows error code */
 	MS_NOTIFY_STATUS = 12345,
@@ -166,18 +168,22 @@ enum notify_type_t {
 	DPD_R_U_THERE_ACK = 36137,
 	/* IKEv1 Cisco High Availability */
 	UNITY_LOAD_BALANCE = 40501,
+	/* draft-ietf-ipsecme-ikev2-intermediate */
+	INTERMEDIATE_EXCHANGE_SUPPORTED = 40960,
+	/* draft-tjhai-ipsecme-hybrid-qske-ikev2 */
+	ADDITIONAL_KEY_EXCHANGE = 40961,
 	/* BEET mode, not even a draft yet. private use */
-	USE_BEET_MODE = 40961,
+	USE_BEET_MODE = 40962,
 	/* IKE-ME, private use */
-	ME_MEDIATION = 40962,
-	ME_ENDPOINT = 40963,
-	ME_CALLBACK = 40964,
-	ME_CONNECTID = 40965,
-	ME_CONNECTKEY = 40966,
-	ME_CONNECTAUTH = 40967,
-	ME_RESPONSE = 40968,
+	ME_MEDIATION = 40963,
+	ME_ENDPOINT = 40964,
+	ME_CALLBACK = 40965,
+	ME_CONNECTID = 40966,
+	ME_CONNECTKEY = 40967,
+	ME_CONNECTAUTH = 40968,
+	ME_RESPONSE = 40969,
 	/* RADIUS attribute received/to send to a AAA backend */
-	RADIUS_ATTRIBUTE = 40969,
+	RADIUS_ATTRIBUTE = 40970,
 };
 
 /**
