@@ -122,7 +122,7 @@ enum exchange_type_t{
 	IKE_SESSION_RESUME = 38,
 
 	/* IKE_INTERMEDIATE (draft-ietf-ipsecme-ikev2-intermediate) */
-	IKE_INTERMEDIATE = 240,
+	IKE_INTERMEDIATE = 136,
 
 #ifdef ME
 	/**

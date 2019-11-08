@@ -168,10 +168,6 @@ enum notify_type_t {
 	DPD_R_U_THERE_ACK = 36137,
 	/* IKEv1 Cisco High Availability */
 	UNITY_LOAD_BALANCE = 40501,
-	/* draft-ietf-ipsecme-ikev2-intermediate */
-	INTERMEDIATE_EXCHANGE_SUPPORTED = 40960,
-	/* draft-tjhai-ipsecme-hybrid-qske-ikev2 */
-	ADDITIONAL_KEY_EXCHANGE = 40961,
 	/* BEET mode, not even a draft yet. private use */
 	USE_BEET_MODE = 40962,
 	/* IKE-ME, private use */
@@ -184,6 +180,10 @@ enum notify_type_t {
 	ME_RESPONSE = 40969,
 	/* RADIUS attribute received/to send to a AAA backend */
 	RADIUS_ATTRIBUTE = 40970,
+	/* draft-ietf-ipsecme-ikev2-intermediate */
+	INTERMEDIATE_EXCHANGE_SUPPORTED = 50200,
+	/* draft-tjhai-ipsecme-hybrid-qske-ikev2 */
+	ADDITIONAL_KEY_EXCHANGE = 50205,
 };
 
 /**
