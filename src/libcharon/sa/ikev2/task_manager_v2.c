@@ -1325,16 +1325,32 @@ static void send_notify_response(private_task_manager_t *this,
 }
 
 /**
+ * Send an INVALID_SYNTAX notify and maybe destroy the IKE_SA
+ */
+static status_t send_invalid_syntax(private_task_manager_t *this,
+									message_t *msg)
+{
+	send_notify_response(this, msg, INVALID_SYNTAX, chunk_empty);
+	incr_mid(this, FALSE);
+
+	if (this->ike_sa->get_state(this->ike_sa) == IKE_ESTABLISHED)
+	{
+		return DESTROY_ME;
+	}
+	return FAILED;
+}
+
+/**
  * Parse the given message and verify that it is valid.
  */
 static status_t parse_message(private_task_manager_t *this, message_t *msg)
 {
-	status_t status;
+	status_t parse_status, status;
 	uint8_t type = 0;
 
-	status = msg->parse_body(msg, this->ike_sa->get_keymat(this->ike_sa));
+	parse_status = msg->parse_body(msg, this->ike_sa->get_keymat(this->ike_sa));
 
-	if (status == SUCCESS)
+	if (parse_status == SUCCESS)
 	{	/* check for unsupported critical payloads */
 		enumerator_t *enumerator;
 		unknown_payload_t *unknown;
@@ -1350,8 +1366,8 @@ static status_t parse_message(private_task_manager_t *this, message_t *msg)
 				{
 					type = unknown->get_type(unknown);
 					DBG1(DBG_ENC, "payload type %N is not supported, "
-						 "but its critical!", payload_type_names, type);
-					status = NOT_SUPPORTED;
+						 "but payload is critical!", payload_type_names, type);
+					parse_status = NOT_SUPPORTED;
 					break;
 				}
 			}
@@ -1359,11 +1375,13 @@ static status_t parse_message(private_task_manager_t *this, message_t *msg)
 		enumerator->destroy(enumerator);
 	}
 
-	if (status != SUCCESS)
+	status = parse_status;
+
+	if (parse_status != SUCCESS)
 	{
 		bool is_request = msg->get_request(msg);
 
-		switch (status)
+		switch (parse_status)
 		{
 			case NOT_SUPPORTED:
 				DBG1(DBG_IKE, "critical unknown payloads found");
@@ -1379,18 +1397,14 @@ static status_t parse_message(private_task_manager_t *this, message_t *msg)
 				DBG1(DBG_IKE, "message parsing failed");
 				if (is_request)
 				{
-					send_notify_response(this, msg,
-										 INVALID_SYNTAX, chunk_empty);
-					incr_mid(this, FALSE);
+					status = send_invalid_syntax(this, msg);
 				}
 				break;
 			case VERIFY_ERROR:
 				DBG1(DBG_IKE, "message verification failed");
 				if (is_request)
 				{
-					send_notify_response(this, msg,
-										 INVALID_SYNTAX, chunk_empty);
-					incr_mid(this, FALSE);
+					status = send_invalid_syntax(this, msg);
 				}
 				break;
 			case FAILED:
@@ -1407,11 +1421,12 @@ static status_t parse_message(private_task_manager_t *this, message_t *msg)
 			 is_request ? "request" : "response",
 			 msg->get_message_id(msg));
 
-		charon->bus->alert(charon->bus, ALERT_PARSE_ERROR_BODY, msg, status);
+		charon->bus->alert(charon->bus, ALERT_PARSE_ERROR_BODY, msg,
+						   parse_status);
 
 		if (this->ike_sa->get_state(this->ike_sa) == IKE_CREATED)
 		{	/* invalid initiation attempt, close SA */
-			return DESTROY_ME;
+			status = DESTROY_ME;
 		}
 	}
 	return status;
