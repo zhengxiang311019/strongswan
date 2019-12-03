@@ -185,6 +185,11 @@ static mac_t *hmac_create(hash_algorithm_t algo)
 	this->hmac = &this->hmac_ctx;
 #endif
 
+	if (!set_key(this, chunk_from_str("")))
+	{
+		destroy(this);
+		return NULL;
+	}
 	return &this->public;
 }
 
